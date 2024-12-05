@@ -1,0 +1,18 @@
+Categoría: Loza
+"Proporciones para una loza de 10 metros cuadrados."
+"Materiales para una loza de 5 metros cuadrados."
+"Loza de 20 metros cuadrados."
+"Materiales necesarios para una loza de 8 metros cuadrados."
+"Quiero calcular una loza de 12 metros cuadrados."
+Categoría: Cimentación
+"Cimentación de 15 metros cuadrados."
+"Materiales para cimentación de 10 metros cuadrados."
+"Proporciones para cimentación de 20 metros."
+"Cálculo para cimentación de 25 metros cuadrados."
+"Necesito materiales para una cimentación de 5 metros cuadrados."
+Categoría: Columnas
+"Columnas de 5 metros cuadrados."
+"Proporciones para columnas de 12 metros cuadrados."
+"Cálculo de materiales para columnas de 8 metros cuadrados."
+"Columnas de 10 metros cuadrados, ¿qué necesito?"
+"Materiales para columnas de 7 metros cuadrados."

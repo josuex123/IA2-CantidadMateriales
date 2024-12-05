@@ -1,3 +1,5 @@
+import tkinter as tk
+from tkinter import messagebox
 import speech_recognition as sr
 import pyttsx3
 
@@ -30,33 +32,29 @@ def reconocer_voz():
 # Función para calcular los materiales
 def calcular_materiales(tipo, cantidad):
     if tipo == "loza":
-        # Proporciones para 1 metro cuadrado de loza
-        cemento_por_m2 = 7  # en bolsas de 50kg
-        arena_por_m2 = 0.6  # en metros cúbicos
-        grava_por_m2 = 0.6  # en metros cúbicos
-        agua_por_m2 = 180   # en litros
+        cemento_por_m2 = 7
+        arena_por_m2 = 0.07
+        grava_por_m2 = 0.07
+        agua_por_m2 = 20
     elif tipo == "cimentación":
-        # Proporciones para 1 metro cúbico de cimentación
-        cemento_por_m3 = 8  # en bolsas de 50kg
-        arena_por_m3 = 0.5  # en metros cúbicos
-        grava_por_m3 = 0.8  # en metros cúbicos
-        agua_por_m3 = 200   # en litros
+        cemento_por_m3 = 9.3
+        arena_por_m3 = 0.45
+        grava_por_m3 = 0.65
+        agua_por_m3 = 190
     elif tipo == "columnas":
-        # Proporciones para 1 metro cúbico de columnas
-        cemento_por_m3 = 10  # en bolsas de 50kg
-        arena_por_m3 = 0.4  # en metros cúbicos
-        grava_por_m3 = 0.9  # en metros cúbicos
-        agua_por_m3 = 210   # en litros
+        cemento_por_m3 = 10.5
+        arena_por_m3 = 0.38
+        grava_por_m3 = 0.85
+        agua_por_m3 = 200
     else:
         return None
 
-    # Cálculo total según el tipo
     if tipo == "loza":
         cemento_total = cemento_por_m2 * cantidad
         arena_total = arena_por_m2 * cantidad
         grava_total = grava_por_m2 * cantidad
         agua_total = agua_por_m2 * cantidad
-    else:  # cimentación o columnas
+    else:
         cemento_total = cemento_por_m3 * cantidad
         arena_total = arena_por_m3 * cantidad
         grava_total = grava_por_m3 * cantidad
@@ -64,13 +62,12 @@ def calcular_materiales(tipo, cantidad):
 
     return cemento_total, arena_total, grava_total, agua_total
 
-# Lógica principal
-def main():
+# Función principal para manejar el comando de voz y calcular materiales
+def procesar_comando():
     comando = reconocer_voz()
     if comando:
-        # Procesar el comando para extraer tipo y cantidad
         try:
-            palabras = comando.split()
+            palabras = comando.lower().split()
             tipo = None
             cantidad = None
 
@@ -79,30 +76,51 @@ def main():
                 tipo = "loza"
             elif "cimentación" in palabras:
                 tipo = "cimentación"
-            elif "columnas" in palabras:
+            elif "columna" in palabras or "columnas" in palabras:
                 tipo = "columnas"
 
-            # Buscar la cantidad (número)
+            # Buscar la cantidad
             for palabra in palabras:
-                if palabra.isdigit():
-                    cantidad = int(palabra)
+                palabra_limpia = ''.join(c for c in palabra if c.isdigit())
+                if palabra_limpia.isdigit():
+                    cantidad = int(palabra_limpia)
                     break
 
             if tipo and cantidad:
                 cemento, arena, grava, agua = calcular_materiales(tipo, cantidad)
                 respuesta = (
-                    f"Para {cantidad} metros de {tipo}, necesitas: "
-                    f"{cemento} bolsas de cemento, {arena:.2f} metros cúbicos de arena, "
-                    f"{grava:.2f} metros cúbicos de grava, y {agua:.2f} litros de agua."
+                    f"Para {cantidad} metros de {tipo}, necesitas: \n"
+                    f"{cemento} bolsas de cemento,\n {arena:.2f} metros cúbicos de arena,\n "
+                    f"{grava:.2f} metros cúbicos de grava, y \n{agua:.2f} litros de agua."
                 )
-                print(respuesta)
                 hablar(respuesta)
+                return respuesta
             else:
-                print("No entendí el tipo de construcción o la cantidad.")
-                hablar("No entendí el tipo de construcción o la cantidad.")
+                respuesta = "No entendí el tipo de construcción o la cantidad."
+                hablar(respuesta)
+                return respuesta
         except Exception as e:
             print(f"Ocurrió un error: {e}")
             hablar("Ocurrió un error al procesar tu solicitud.")
+            return "Ocurrió un error al procesar tu solicitud."
 
-if __name__ == "__main__":
-    main()
+class Aplicacion:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("Reconocimiento de Voz - Cálculo de Materiales")
+        self.master.geometry("500x400")
+
+        self.boton_grabar = tk.Button(self.master, text="Grabar Comando", command=self.grabar_comando, width=20)
+        self.boton_grabar.pack(pady=20)
+
+        self.texto_resultado = tk.Label(self.master, text="Resultado aparecerá aquí", justify="left", width=50, height=10, anchor="nw")
+        self.texto_resultado.pack(pady=20)
+
+    def grabar_comando(self):
+        resultado = procesar_comando()  
+        self.texto_resultado.config(text=resultado)  
+
+# Iniciar la interfaz gráfica
+root = tk.Tk()
+app = Aplicacion(root)
+root.mainloop()
